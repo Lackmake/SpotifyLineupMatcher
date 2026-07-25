@@ -1,2 +1,5 @@
-# Spotify Credentials
+# Spotify Credentials & Caches
 .env
+.spotify_token_cache.json
+.spotify_profile_cache.json
+__pycache__/

@@ -1,0 +1,18 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "chrome",
+            "request": "launch",
+            "name": "Launch Web App in Chrome",
+            "file": "${workspaceFolder}/index.html"
+        },
+        {
+            "name": "Run Python Local Server (Optional)",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/spotify_match.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

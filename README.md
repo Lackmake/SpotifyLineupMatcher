@@ -1,53 +1,49 @@
-# World Club Dome Spotify Matcher
+# Spotify Event Lineup Matcher (Standalone Web App)
 
-A utility to scrape the World Club Dome lineup and match the performing artists against your Spotify listening profile (Liked Songs, Top Artists, and Top Tracks) to find out which festival acts you already know and love!
-
-## Features
-
-- **Lineup Scraper**: Extracts lineup artist names for all three days (Friday, Saturday, Sunday) from the official World Club Dome site.
-- **Robust Matching Engine**:
-  - **B2B Splitting**: Separates back-to-back entries (e.g. `Artist A b2b Artist B`) to match them individually.
-  - **Multi-Artist Tracks**: Extracts and evaluates every artist on your liked songs.
-  - **Normalization**: Handles punctuation, accents/diacritics (e.g. `Möbius` -> `mobius`, `ÉTIENNE` -> `etienne`), and case differences.
-  - **Fuzzy Spell Check**: Matches close spelling variations using normalized string similarity (Levenshtein distance).
-- **Multi-Indicator Reporting**: Flags why you know an artist (e.g. if they are in your Liked Songs, Top Tracks, or a Top Artist over short, medium, or long-term periods).
+A 100% client-side, standalone web application to match any festival or event artist lineup against your personal Spotify listening history (Liked Songs, Top Artists, Top Tracks, and Recently Played).
 
 ---
 
-## Setup & Usage
+## 🌟 Features
 
-### 1. Prerequisites & Spotify Application
-To access your Spotify profile data, you need to create a free Spotify Developer Application:
-1. Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard) and log in.
-2. Click **Create app** and configure:
-   - **App name**: `WCD Artist Matcher`
-   - **Redirect URI**: `http://127.0.0.1:8888/callback` *(This loopback IP address is strictly required by Spotify; `localhost` is not allowed).*
-3. Save your application settings.
-4. Copy your **Client ID** and **Client Secret**.
-
-### 2. Installation & Credentials
-1. Clone this repository to your local machine.
-2. Create a `.env` file in the root directory (this is automatically ignored by Git):
-   ```ini
-   SPOTIFY_CLIENT_ID=your_client_id_here
-   SPOTIFY_CLIENT_SECRET=your_client_secret_here
-   ```
-3. Make sure Python 3 is installed.
-
-### 3. Run the Matching Script
-Run the script from your terminal:
-```bash
-python spotify_match.py
-```
-
-1. The script will automatically open your default browser to Spotify's authorization page.
-2. Log in and click **Agree** to authorize the script (uses `user-library-read` and `user-top-read` scopes).
-3. Once authorized, return to your terminal. The script will fetch your data and compile the match report.
+- **100% Client-Side & Standalone**: Runs entirely in the browser using Spotify PKCE OAuth flow. No Python or backend server required!
+- **GitHub Pages Ready**: Can be deployed for free directly to GitHub Pages, Vercel, Netlify, or run locally.
+- **Smart Automatic Delimiter Detection**:
+  - Automatically identifies whether your input is separated by commas (`,`), line breaks (`\n`), semicolons (`;`), or tabs (`\t`).
+  - Decodes HTML entities (e.g. `&amp;` -> `&`) before scoring delimiters.
+  - Automatically strips surrounding single/double/curly quotes (`'...'`, `"..."`, `‘...’`) while preserving internal apostrophes.
+  - Automatically separates back-to-back (`b2b`) entries.
+- **Robust In-Browser Fuzzy Matching**:
+  - NFKD accent decomposition & diacritic stripping (e.g. `Möbius` -> `mobius`, `ÉTIENNE` -> `etienne`).
+  - Levenshtein distance string similarity check for close spelling variations.
+- **Synced Spotify Library Viewer**:
+  - View, search, and filter your entire imported Spotify music library right inside the app!
 
 ---
 
-## Files
+## 🚀 How to Host on GitHub Pages
 
-- `artists.txt`: The extracted list of WCD artists grouped by day.
-- `match_report.txt`: The final generated matching report showing performing artists you listen to, categorized by day with liked songs details.
-- `spotify_match.py`: The Python execution script.
+1. **Push this repository to GitHub**.
+2. **Configure Spotify Developer App**:
+   - Go to the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard).
+   - Edit your app settings and add your GitHub Pages URL to **Redirect URIs**:
+     ```
+     https://<your-username>.github.io/<your-repo-name>/
+     ```
+3. **Enable GitHub Pages**:
+   - Go to your repository **Settings** -> **Pages**.
+   - Under **Source**, select `main` branch and `/ (root)` folder.
+   - Click **Save**.
+4. Open your live GitHub Pages link, click **Connect Spotify**, and start matching lineups instantly!
+
+---
+
+## 💻 Local Usage
+
+You can also run it locally:
+- Simply open `index.html` in your browser!
+- Or start a quick local HTTP server:
+  ```bash
+  python -m http.server 8000
+  ```
+  Then navigate to `http://localhost:8000`.
