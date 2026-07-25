@@ -867,11 +867,14 @@
             return localStorage.getItem('spotify_client_id') || DEFAULT_CLIENT_ID;
         }
 
-        // Get current Redirect URI
+        // Get current Redirect URI (normalized without trailing slash for repository URLs)
         function getRedirectUri() {
             let uri = window.location.origin + window.location.pathname;
             if (uri.endsWith('/index.html')) {
                 uri = uri.substring(0, uri.length - 10);
+            }
+            if (uri.length > 8 && uri.endsWith('/')) {
+                uri = uri.slice(0, -1);
             }
             return uri;
         }
@@ -889,7 +892,12 @@
         async function generateCodeChallenge(codeVerifier) {
             const data = new TextEncoder().encode(codeVerifier);
             const digest = await window.crypto.subtle.digest('SHA-256', data);
-            return btoa(String.fromCharCode.apply(null, new Uint8Array(digest)))
+            const bytes = new Uint8Array(digest);
+            let binary = '';
+            for (let i = 0; i < bytes.byteLength; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary)
                 .replace(/\+/g, '-')
                 .replace(/\//g, '_')
                 .replace(/=+$/, '');
@@ -922,6 +930,14 @@
 
         async function handleOAuthCallback() {
             const urlParams = new URLSearchParams(window.location.search);
+
+            if (urlParams.has('error')) {
+                const errName = urlParams.get('error');
+                alert(`Spotify Authorization Error: "${errName}".\n\nPlease ensure your Spotify Developer App settings include this exact Redirect URI:\n${getRedirectUri()}`);
+                window.history.replaceState({}, document.title, window.location.pathname);
+                return false;
+            }
+
             if (!urlParams.has('code')) return false;
 
             const code = urlParams.get('code');
